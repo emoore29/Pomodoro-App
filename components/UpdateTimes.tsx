@@ -1,5 +1,6 @@
-import { View, TextInput, Button, StyleSheet } from "react-native";
 import { useState } from "react";
+import { Button, View } from "react-native";
+import UpdateTimeInput from "./UpdateTimeInput";
 
 type UpdateTimesProps = {
   focusMinutes: number;
@@ -19,18 +20,20 @@ export default function UpdateTimes({
   const [updateTimes, setUpdateTimes] = useState<boolean>(false);
   const [inputFocusMinutes, setInputFocusMinutes] = useState<string>("25");
   const [inputRestMinutes, setInputRestMinutes] = useState<string>("5");
-  const [editingRest, setEditingRest] = useState(false);
-  const [editingFocus, setEditingFocus] = useState(false);
+  const [editFocusInProgress, setEditFocusInProgress] =
+    useState<boolean>(false);
+  const [editRestInProgress, setEditRestInProgress] = useState<boolean>(false);
 
   const handleTickClick = (id: string) => {
     if (id === "update-focus") {
+      console.log("updating focus, input:", inputFocusMinutes);
       setFocusMinutes(parseInt(inputFocusMinutes));
       setSeconds(0);
-      setEditingFocus(false);
+      setEditFocusInProgress(false);
     } else if (id === "update-rest") {
       setRestMinutes(parseInt(inputRestMinutes));
       setSeconds(0);
-      setEditingRest(false);
+      setEditRestInProgress(false);
     }
   };
 
@@ -42,40 +45,28 @@ export default function UpdateTimes({
       />
       {updateTimes && (
         <View>
-          <TextInput
-            style={styles.timerInput}
+          <UpdateTimeInput
+            label="focus"
             defaultValue={focusMinutes.toString()}
-            onChangeText={(input) => setInputFocusMinutes(input)}
-            placeholder={focusMinutes.toString()}
-            keyboardType="numeric"
+            onInputChange={(input) => setInputFocusMinutes(input)}
+            onTickClick={() => handleTickClick("update-focus")}
+            editInProgress={editFocusInProgress}
+            setEditInProgress={setEditFocusInProgress}
+            inputValue={inputFocusMinutes}
+            setInputValue={setInputFocusMinutes}
           />
-          <Button
-            disabled={!inputFocusMinutes}
-            title="✔"
-            onPress={() => handleTickClick("update-focus")}
-          />
-          <Button title="✖" onPress={() => handleTickClick("update-focus")} />
-          <TextInput
-            style={styles.timerInput}
+          <UpdateTimeInput
+            label="rest"
             defaultValue={restMinutes.toString()}
-            onChangeText={(input) => setInputRestMinutes(input)}
-            placeholder={restMinutes.toString()}
-            keyboardType="numeric"
+            onInputChange={(input) => setInputRestMinutes(input)}
+            onTickClick={() => handleTickClick("update-rest")}
+            editInProgress={editRestInProgress}
+            setEditInProgress={setEditRestInProgress}
+            inputValue={inputRestMinutes}
+            setInputValue={setInputRestMinutes}
           />
-          <Button
-            disabled={!inputRestMinutes}
-            title="✔"
-            onPress={() => handleTickClick("update-rest")}
-          />
-          <Button title="✖" onPress={() => handleTickClick("update-rest")} />
         </View>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  timerInput: {
-    fontSize: 50,
-  },
-});
