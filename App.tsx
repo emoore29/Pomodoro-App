@@ -14,6 +14,7 @@ import {
   updateDisplayOfMinutes,
 } from "./utils/utilityFunctions";
 import UpdateTimes from "./components/UpdateTimes";
+import ToggleSession from "./components/ToggleSession";
 
 // set status bar styling based on platform
 StatusBar.setBarStyle("dark-content");
@@ -98,6 +99,10 @@ const App = () => {
         },
       ]}
     >
+      <ToggleSession
+        typeOfSession={typeOfSession}
+        setTypeOfSession={setTypeOfSession}
+      />
       <UpdateTimes
         focusMinutes={focusMinutes}
         restMinutes={restMinutes}
