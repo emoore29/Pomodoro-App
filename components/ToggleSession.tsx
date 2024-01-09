@@ -1,4 +1,4 @@
-import { Button, View } from "react-native";
+import { Button, View, Text, Pressable, StyleSheet } from "react-native";
 
 type ToggleSessionProps = {
   typeOfSession: string;
@@ -19,7 +19,21 @@ export default function ToggleSession({
 
   return (
     <View>
-      <Button title="Toggle session" onPress={updateSessionType} />
+      <Pressable style={styles.button} onPress={updateSessionType}>
+        <Text>Toggle session type: {typeOfSession}</Text>
+      </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 5,
+    backgroundColor: "white",
+  },
+});

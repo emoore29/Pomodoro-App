@@ -1,20 +1,20 @@
+import "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import {
   Platform,
+  Pressable,
+  StatusBar,
   StyleSheet,
   Text,
   View,
-  StatusBar,
-  Button,
-  TextInput,
 } from "react-native";
+import "react-native-gesture-handler";
+import Menu from "./components/Menu";
 import Timer from "./components/Timer";
 import {
   toggleSessionType,
   updateDisplayOfMinutes,
 } from "./utils/utilityFunctions";
-import UpdateTimes from "./components/UpdateTimes";
-import ToggleSession from "./components/ToggleSession";
 
 // set status bar styling based on platform
 StatusBar.setBarStyle("dark-content");
@@ -28,6 +28,7 @@ const App = () => {
   const [statusBarHeight, setStatusBarHeight] = useState<number>(24);
   const [focusColor, setFocusColor] = useState<string>("#58427c"); // blue: 1a75a2, purple: 58427c
   const [restColor, setRestColor] = useState<string>("#405E40");
+  const [displayMenu, setDisplayMenu] = useState<boolean>(false);
 
   // Times
   const [typeOfSession, setTypeOfSession] = useState<string>("focus");
@@ -69,7 +70,7 @@ const App = () => {
         }
       }, 1000);
     }
-    // cleanup function ensures the interval stops and does not continue to execute if the play state changes.
+    // cleanup function ensures the interval resets on each new render
     return () => clearInterval(interval);
   });
 
@@ -87,7 +88,7 @@ const App = () => {
   // Offset app from the top based on the height of the status bar
   useEffect(() => {
     StatusBar.currentHeight && setStatusBarHeight(StatusBar.currentHeight);
-  });
+  }, []);
 
   return (
     <View
@@ -99,22 +100,29 @@ const App = () => {
         },
       ]}
     >
-      <ToggleSession
-        typeOfSession={typeOfSession}
-        setTypeOfSession={setTypeOfSession}
-      />
-      <UpdateTimes
-        focusMinutes={focusMinutes}
-        restMinutes={restMinutes}
-        setFocusMinutes={setFocusMinutes}
-        setRestMinutes={setRestMinutes}
-        setSeconds={setSeconds}
-      />
-      <Button
-        title={play ? "Pause" : "Play"}
-        onPress={() => setPlay((prev) => !prev)}
-      />
+      <Pressable
+        style={styles.menuButton}
+        onPress={() => setDisplayMenu((prev) => !prev)}
+      >
+        <Text>{displayMenu ? "Hide menu" : "Show menu"}</Text>
+      </Pressable>
+      {displayMenu && (
+        <Menu
+          statusBarHeight={statusBarHeight}
+          typeOfSession={typeOfSession}
+          setTypeOfSession={setTypeOfSession}
+          focusMinutes={focusMinutes}
+          restMinutes={restMinutes}
+          setFocusMinutes={setFocusMinutes}
+          setRestMinutes={setRestMinutes}
+          setSeconds={setSeconds}
+        />
+      )}
+
       <Timer minutes={minutes} seconds={seconds} />
+      <Pressable style={styles.button} onPress={() => setPlay((prev) => !prev)}>
+        <Text>{play ? "Pause" : "Play"}</Text>
+      </Pressable>
     </View>
   );
 };
@@ -123,13 +131,29 @@ const styles = StyleSheet.create({
   pomodoro: {
     position: "relative",
     display: "flex",
-    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
   },
   timerInput: {
     fontSize: 50,
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 5,
+    backgroundColor: "white",
+  },
+  menuButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 5,
   },
 });
 

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Pressable,
+  Text,
+} from "react-native";
 
 type UpdateTimeInputProps = {
   label: string;
@@ -10,6 +17,7 @@ type UpdateTimeInputProps = {
   setEditInProgress: React.Dispatch<React.SetStateAction<boolean>>;
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  minutes: number;
 };
 
 export default function UpdateTimeInput({
@@ -20,13 +28,18 @@ export default function UpdateTimeInput({
   setEditInProgress,
   inputValue,
   setInputValue,
+  minutes,
 }: UpdateTimeInputProps) {
   return (
     <View>
-      <Button
-        title={`Update ${label} time`}
+      <Pressable
+        style={styles.button}
         onPress={() => setEditInProgress((prev) => !prev)}
-      />
+      >
+        <Text>
+          Update {label} time: {minutes}
+        </Text>
+      </Pressable>
       {editInProgress && (
         <View>
           <TextInput
@@ -36,8 +49,16 @@ export default function UpdateTimeInput({
             placeholder={defaultValue}
             keyboardType="numeric"
           />
-          <Button disabled={!inputValue} title="✔" onPress={onTickClick} />
-          <Button title="✖" onPress={onTickClick} />
+          <Pressable
+            style={styles.button}
+            disabled={!inputValue}
+            onPress={onTickClick}
+          >
+            <Text>✔</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={onTickClick}>
+            <Text>✖</Text>
+          </Pressable>
         </View>
       )}
     </View>
@@ -46,6 +67,15 @@ export default function UpdateTimeInput({
 
 const styles = StyleSheet.create({
   timerInput: {
-    fontSize: 50,
+    fontSize: 30,
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 5,
+    backgroundColor: "white",
   },
 });
