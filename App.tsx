@@ -1,4 +1,3 @@
-import "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import {
   Platform,
@@ -8,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import "react-native-gesture-handler";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import Menu from "./components/Menu";
 import Timer from "./components/Timer";
 import {
