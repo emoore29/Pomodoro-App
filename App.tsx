@@ -7,13 +7,14 @@ import {
   Text,
   View,
 } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
 import Menu from "./components/Menu";
 import Timer from "./components/Timer";
 import {
   toggleSessionType,
   updateDisplayOfMinutes,
 } from "./utils/utilityFunctions";
+import SlideMenu from "./components/SlideMenu";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // set status bar styling based on platform
 StatusBar.setBarStyle("dark-content");
@@ -90,39 +91,45 @@ const App = () => {
   }, []);
 
   return (
-    <View
-      style={[
-        styles.pomodoro,
-        { paddingTop: statusBarHeight },
-        {
-          backgroundColor: typeOfSession === "focus" ? focusColor : restColor,
-        },
-      ]}
-    >
-      <Pressable
-        style={styles.menuButton}
-        onPress={() => setDisplayMenu((prev) => !prev)}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View
+        style={[
+          styles.pomodoro,
+          { paddingTop: statusBarHeight },
+          {
+            backgroundColor: typeOfSession === "focus" ? focusColor : restColor,
+          },
+        ]}
       >
-        <Text>{displayMenu ? "Hide menu" : "Show menu"}</Text>
-      </Pressable>
-      {displayMenu && (
-        <Menu
-          statusBarHeight={statusBarHeight}
-          typeOfSession={typeOfSession}
-          setTypeOfSession={setTypeOfSession}
-          focusMinutes={focusMinutes}
-          restMinutes={restMinutes}
-          setFocusMinutes={setFocusMinutes}
-          setRestMinutes={setRestMinutes}
-          setSeconds={setSeconds}
-        />
-      )}
+        <SlideMenu statusBarHeight={statusBarHeight} />
+        <Pressable
+          style={styles.menuButton}
+          onPress={() => setDisplayMenu((prev) => !prev)}
+        >
+          <Text>{displayMenu ? "Hide menu" : "Show menu"}</Text>
+        </Pressable>
+        {displayMenu && (
+          <Menu
+            statusBarHeight={statusBarHeight}
+            typeOfSession={typeOfSession}
+            setTypeOfSession={setTypeOfSession}
+            focusMinutes={focusMinutes}
+            restMinutes={restMinutes}
+            setFocusMinutes={setFocusMinutes}
+            setRestMinutes={setRestMinutes}
+            setSeconds={setSeconds}
+          />
+        )}
 
-      <Timer minutes={minutes} seconds={seconds} />
-      <Pressable style={styles.button} onPress={() => setPlay((prev) => !prev)}>
-        <Text>{play ? "Pause" : "Play"}</Text>
-      </Pressable>
-    </View>
+        <Timer minutes={minutes} seconds={seconds} />
+        <Pressable
+          style={styles.button}
+          onPress={() => setPlay((prev) => !prev)}
+        >
+          <Text>{play ? "Pause" : "Play"}</Text>
+        </Pressable>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
